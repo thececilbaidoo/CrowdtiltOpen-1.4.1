@@ -1,0 +1,122 @@
+<div id="admin">
+  <div class="container content_box clearfix">
+
+  <%= render 'admin/header', active: 'settings' %>
+
+    <ul class="nav nav-tabs nav-bank-setup">
+      <li><a href="<%= admin_processor_setup_path %>">Payment Processor</a></li>
+      <li class="active"><a href="<%= admin_bank_account_path %>">Bank Setup</a></li>
+    </ul>
+
+  <div id="admin_bank_setup">
+
+    <div class="main_content">
+
+      <% if @bank['is_default'] %>
+
+      <h4>Your banking information's all set up!</h4>
+      <div class="account_numbers">
+        <p>Routing Number: ****<%= @bank['bank_code_last_four'] %></p>
+        <p>Account Number: ****<%= @bank['account_number_last_four'] %></p>
+      </div>
+      <div class="more_info">
+        <p>Campaign funds are transferred automatically to your account within 2 business days of campaign expiration. </p>
+        <p>Need to change your bank account? <%= link_to 'Delete bank account', delete_admin_bank_account_path, :confirm => 'Are you sure you want to delete this bank account?', :method => :delete %></p>
+      </div>
+
+      <% else %>
+
+      <%= form_tag(create_admin_bank_account_path, method: "post", id: "admin_bank_form") %>
+
+      <h4>Personal Information <span class="label show_tooltip" data-placement="right" data-title="BUSINESS ACCOUNTS: <br>To prevent fraud, we verify your personal identity independently of your business bank account. <br> DO NOT ENTER YOUR BUSINESS ADDRESS / PHONE. Please enter your personal details here and your business account routing and account numbers in the 'Banking Information' section below.">Using a business account?</span></h4>
+      <fieldset>
+
+          <div class="form-row clearfix">
+            <div class="field">
+              <label for="full_legal_name">Legal Name (first and last)</label>
+              <input name="full_legal_name" id="full_legal_name" type="text">
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone (XXX-XXX-XXXX)</label>
+              <input name="phone" id="phone" type="text">
+            </div>
+          </div>
+
+          <div class="form-row clearfix">
+            <div class="field">
+              <label for="street_address">Street Address</label>
+              <input name="street_address" id="street_address" type="text" style="width: 320px">
+            </div>
+
+            <div class="field">
+              <label for="zip">Zip Code</label>
+              <input name="zip" id="zip" type="text" style="width: 100px">
+            </div>
+          </div>
+
+          <div class="form-row clearfix">
+            <div class="field">
+            <label>Birth Month</label>
+              <select id="birth_month" style="width: 110px">
+                  <option value="01" selected>January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="birth_year">Birth Year (YYYY)</label>
+              <input name="birth_year" id="birth_year" type="text" style="width: 100px">
+            </div>
+          </div>
+
+        </fieldset>
+
+        <h4>Banking Information</h4>
+        <fieldset>
+          <div class="form-row clearfix">
+            <div class="field">
+              <label for="routing_number">Routing Number <i class="icon icon-info-sign show_tooltip" data-placement="right" data-title="Your routing number is the nine digit number in the bottom left corner of your check."></i></label>
+              <input name="bank_routing_number" id="bank_routing_number" type="text">
+            </div>
+
+            <div class="field">
+              <label for="account_number">Account Number <i class="icon icon-info-sign show_tooltip" data-placement="right" data-title="Your account number is the number to the right of the routing number on your check."></i></label>
+              <input name="account_number" id="account_number" type="text">
+            </div>
+          </div>
+        </fieldset>
+
+        <input id="ct_user_id" type="hidden"  name="ct_user_id" value="<%= @ct_admin_id %>" >
+
+        <button class="btn btn-primary show_loader" data-loader="bank_form" type="submit">Save</button>
+        <span class="loader" data-loader="bank_form" style="display:none"></span>
+      </form>
+      <div id="errors"></div>
+
+      <% end %>
+
+    </div>
+
+    <div class="settlements">
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<%= javascript_include_tag "https://api.crowdtilt.com/v1/js/crowdtilt.js" %>
+<%= javascript_tag do %>
+  crowdtilt.init('<%= Rails.env.production? ? 'production' : 'sandbox' %>')
+<% end %>

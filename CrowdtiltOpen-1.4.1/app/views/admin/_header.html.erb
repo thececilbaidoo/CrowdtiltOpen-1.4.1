@@ -1,0 +1,26 @@
+<%= render 'admin/breadcrumbs', crumbs: @breadcrumbs %>
+
+<ul class="nav nav-pills">
+  <li class="<%= 'active' if active == 'campaigns' %>">
+    <%= link_to "Campaigns", admin_campaigns_path, :class => 'show_loader', :'data-loader' => "admin_header" %>
+  </li>
+  <li class="<%= 'active' if active == 'homepage' %>">
+    <%= link_to "Homepage", admin_homepage_path, :class => 'show_loader', :'data-loader' => "admin_header" %>
+  </li>
+  <li class="<%= 'active' if active == 'customize' %>">
+    <%= link_to "Customize", admin_customize_path, :class => 'show_loader', :'data-loader' => "admin_header" %>
+  </li>
+  <li class="dropdown<%= " active" if active == "settings" %>">
+    <a class="dropdown-toggle"
+       data-toggle="dropdown"
+       href="#">
+        Settings
+        <b class="caret"></b>
+      </a>
+    <ul class="dropdown-menu">
+      <%= link_to "Site Settings", admin_site_settings_path, :class => 'show_loader', :'data-loader' => "admin_header" %>
+      <%= link_to "Payment Settings", admin_processor_setup_path, :class => 'show_loader', :'data-loader' => "admin_header" %>
+      <%= link_to "Notification Settings", admin_notification_setup_path, :class => 'show_loader', :'data-loader' => "admin_header" %>
+    </ul>
+  </li>
+</ul>

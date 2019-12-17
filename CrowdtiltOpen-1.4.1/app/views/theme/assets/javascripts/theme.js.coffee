@@ -1,0 +1,4 @@
+Crowdhoster.theme =
+
+  init: ->
+    return

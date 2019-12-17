@@ -1,0 +1,86 @@
+<div id="admin">
+  <div class="container content_box clearfix">
+
+  <%= render 'admin/header', active: 'campaigns' %>
+
+  <div id="admin_payments">
+    <h4><%= @campaign.name %></h4>
+
+    <% if @payments.count > 0 %>
+      <br />
+
+      <div class="search id">
+        <form accept-charset="UTF-8" action="<%= admin_campaigns_payments_path(@campaign) %>" method="get">
+
+          <input id="payment_id" type="text" name="payment_id" placeholder="Search by Payment ID" value="<%= params[:payment_id] if params.has_key?(:payment_id) %>"/>
+          <button type="submit" class="btn btn-primary show_loader" data-loader="admin_header">Search</button>
+        <% if params.has_key?(:payment_id) %>
+          <%= link_to "clear", admin_campaigns_payments_path(@campaign), :class => 'show_loader', :'data-loader' => "admin_header" %>
+        <% end %>
+
+        </form>
+      </div>
+      <div class="search email">
+        <form accept-charset="UTF-8" action="<%= admin_campaigns_payments_path(@campaign) %>" method="get">
+
+          <input id="payment_id" type="text" name="email" placeholder="Search by email" value="<%= params[:email] if params.has_key?(:email) %>"/>
+          <button type="submit" class="btn btn-primary show_loader" data-loader="admin_header">Search</button>
+        <% if params.has_key?(:email) %>
+          <%= link_to "clear", admin_campaigns_payments_path(@campaign), :class => 'show_loader', :'data-loader' => "admin_header" %>
+        <% end %>
+
+        </form>
+      </div>
+
+      <a href="<%= admin_campaigns_payments_path(format: "csv") %>" class="pull-right">
+        <button type="button" class="btn btn-default">
+          <i class="icon-download"></i> Download CSV
+        </button>
+      </a>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <% if @campaign.goal_type == 'orders' %>
+            <th>Quantity</th>
+            <% end %>
+            <th>Amount</th>
+            <th>User Fee</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Payment ID</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @payments.each do |payment| %>
+          <tr>
+            <td><%= payment.fullname %></td>
+            <td class="email"><%= payment.email %></td>
+            <% if @campaign.goal_type == 'orders' %>
+            <td><%= payment.quantity %></td>
+            <% end %>
+            <td class="amount"><%= short_price(payment.amount.to_f/100.0, '$', 2) %></td>
+            <td class="user_fee_amount"><%= short_price(payment.user_fee_amount.to_f/100.0, '$', 2) %></td>
+            <td><%= payment.created_at.strftime("%m/%d/%Y") %></td>
+            <td class="status"><%= payment.status %></td>
+            <td class="ct_payment_id"><%= payment.ct_payment_id %></td>
+            <td><% if ['authorized', 'charged'].include? payment.status %><a class="refund-payment" style="cursor: pointer">Refund</a><% end %></td>
+            <td style="width: 18px"><span class="loader" style="display: none"></span></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <%# if @total_pages > 1 %>
+        <%#= render 'shared/paginate', path: :admin_campaigns_contributors_path, object: @campaign, page: @page, total_pages: @total_pages %>
+      <%# end %>
+    <% else %>
+      <p>No payments yet!</p>
+    <% end %>
+
+  </div>
+  </div>
+</div>
